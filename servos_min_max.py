@@ -51,7 +51,7 @@ while True:
     pwm1.set_pwm(1, 0, servo_min)
     time.sleep(3)
 
-    # Move servos to max extreme.
+    # Move servos to max extreme .
     for i in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]:
         pwm0.set_pwm(i, 0, servo_max)
         time.sleep(3)
