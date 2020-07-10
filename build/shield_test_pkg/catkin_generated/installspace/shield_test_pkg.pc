@@ -1,0 +1,8 @@
+prefix=/home/alina98-raspi/shield_test/install
+
+Name: shield_test_pkg
+Description: Description of shield_test_pkg
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

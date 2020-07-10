@@ -1,16 +1,13 @@
-# Simple demo of of the PCA9685 PWM servo/LED controller library.
-# This will move channel 0 from min to max position repeatedly.
-# Author: Tony DiCola
-# License: Public Domain
-from __future__ import division
-import time
+#!/usr/bin/env python
 
-# Import the PCA9685 module.
+# This will move channel 0 from min to max position repeatedly.
+
+from __future__ import division
+import rospy, time
+import RPi.GPIO as GPIO
+from std_msgs.msg import Int32
 import Adafruit_PCA9685
 
-# Uncomment to enable debug output.
-#import logging
-#logging.basicConfig(level=logging.DEBUG)
 
 # Initialise the PCA9685 using the default address (0x40).
 pwm0 = Adafruit_PCA9685.PCA9685(address=0x40)
@@ -40,23 +37,24 @@ def set_servo_pulse(pwmno,channel, pulse):
 pwm0.set_pwm_freq(60)
 pwm1.set_pwm_freq(60)
 
-print('Moving servos, press Ctrl-C to quit...')
-while True:
-    # Move servos to min extreme.
-    for i in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]:
-        pwm0.set_pwm(i, 0, servo_min)
-        time.sleep(3)
-    pwm1.set_pwm(0, 0, servo_min)
-    time.sleep(3)
-    pwm1.set_pwm(1, 0, servo_min)
-    time.sleep(3)
 
-    # Move servos to max extreme .
-    for i in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]:
-        pwm0.set_pwm(i, 0, servo_max)
+def shield_callback(msg):
+  rospy.loginfo("I heard %s", msg.data)
+  print('Moving servos, press Ctrl-C to quit...')
+  for i in [0, 2, 4, 6, 8, 10, 12, 14]:
+        pwm0.set_pwm(i, 0, msg.data)
+        pwm0.set_pwm(i+1, 0, msg.data)
         time.sleep(3)
-    pwm1.set_pwm(0, 0, servo_max)
-    time.sleep(3)
-    pwm1.set_pwm(1, 0, servo_max)
-    time.sleep(3)
+  pwm1.set_pwm(0, 0, msg.data)
+  pwm1.set_pwm(1, 0, msg.data)
 
+def shield_listener():
+  rospy.init_node('shield_listener', anonymous=True)
+  rospy.Subscriber('move_servos', Int32, shield_callback)
+  rospy.spin()
+
+if __name__=='__main__':
+  try:
+    shield_listener()
+  except rospy.RosInterruptException:
+    pass

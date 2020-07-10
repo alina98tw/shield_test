@@ -1,0 +1,2 @@
+shield_test_pkg
+-DCATKIN_DEVEL_PREFIX=/home/alina98-raspi/shield_test/devel -DCMAKE_INSTALL_PREFIX=/home/alina98-raspi/shield_test/install -G Unix Makefiles
